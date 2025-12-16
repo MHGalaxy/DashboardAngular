@@ -2,16 +2,22 @@ import { Component } from '@angular/core';
 import {SidebarService} from '../../services/sidebar.service';
 import {RouterOutlet} from '@angular/router';
 import {AsyncPipe, NgClass} from '@angular/common';
+import {AppSidebarComponent} from '../app-sidebar/app-sidebar.component';
+import {BackdropComponent} from '../backdrop/backdrop.component';
+import {AppHeaderComponent} from '../app-header/app-header.component';
 
 @Component({
   selector: 'app-app-layout',
   imports: [
     RouterOutlet,
     NgClass,
-    AsyncPipe
+    AsyncPipe,
+    AppSidebarComponent,
+    BackdropComponent,
+    AppHeaderComponent
   ],
   templateUrl: './app-layout.component.html',
-  styleUrl: './app-layout.component.scss',
+  styleUrl: './app-layout.component.css',
 })
 export class AppLayoutComponent {
   readonly isExpanded$;
