@@ -1,20 +1,25 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {NgClass} from '@angular/common';
+import { Component, forwardRef, Input } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'app-input-field',
-  imports: [
-    NgClass
-  ],
+  imports: [NgClass],
   templateUrl: './input-field.component.html',
   styleUrl: './input-field.component.css',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => InputFieldComponent),
+      multi: true,
+    },
+  ],
 })
-export class InputFieldComponent {
+export class InputFieldComponent implements ControlValueAccessor {
   @Input() type: string = 'text';
   @Input() id?: string = '';
   @Input() name?: string = '';
   @Input() placeholder?: string = '';
-  @Input() value: string | number = '';
   @Input() min?: string;
   @Input() max?: string;
   @Input() step?: number;
@@ -24,7 +29,12 @@ export class InputFieldComponent {
   @Input() hint?: string;
   @Input() className: string = '';
 
-  @Output() valueChange = new EventEmitter<string | number>();
+  // internal value used by CVA
+  value: string | number = '';
+
+  // CVA callbacks
+  private onChange: (val: string | number) => void = () => {};
+  private onTouched: () => void = () => {};
 
   get inputClasses(): string {
     let inputClasses = `h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 ${this.className}`;
@@ -41,8 +51,34 @@ export class InputFieldComponent {
     return inputClasses;
   }
 
-  onInput(event: Event) {
+  // When user types
+  handleInput(event: Event) {
     const input = event.target as HTMLInputElement;
-    this.valueChange.emit(this.type === 'number' ? +input.value : input.value);
+    const newValue: string | number =
+      this.type === 'number' ? (input.value === '' ? '' : Number(input.value)) : input.value;
+
+    this.value = newValue;
+    this.onChange(newValue);
+  }
+
+  handleBlur() {
+    this.onTouched();
+  }
+
+  // CVA methods
+  writeValue(obj: any): void {
+    this.value = obj ?? (this.type === 'number' ? '' : '');
+  }
+
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
   }
 }

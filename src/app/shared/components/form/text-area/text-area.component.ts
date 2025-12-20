@@ -1,28 +1,41 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {NgClass} from '@angular/common';
+import { Component, forwardRef, Input } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'app-text-area',
-  imports: [
-    NgClass
-  ],
+  imports: [NgClass],
   templateUrl: './text-area.component.html',
   styleUrl: './text-area.component.css',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => TextAreaComponent),
+      multi: true,
+    },
+  ],
 })
-export class TextAreaComponent {
+export class TextAreaComponent implements ControlValueAccessor {
   @Input() placeholder = 'Enter your message';
   @Input() rows = 3;
-  @Input() value = '';
   @Input() className = '';
   @Input() disabled = false;
   @Input() error = false;
   @Input() hint = '';
 
-  @Output() valueChange = new EventEmitter<string>();
+  value = '';
+
+  private onChange: (val: string) => void = () => {};
+  private onTouched: () => void = () => {};
 
   onInput(event: Event) {
     const val = (event.target as HTMLTextAreaElement).value;
-    this.valueChange.emit(val);
+    this.value = val;
+    this.onChange(val);
+  }
+
+  onBlur() {
+    this.onTouched();
   }
 
   get textareaClasses(): string {
@@ -35,5 +48,21 @@ export class TextAreaComponent {
       base += 'bg-transparent text-gray-900 dark:text-gray-300 text-gray-900 border-gray-300 focus:border-brand-300 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:focus:border-brand-800';
     }
     return base;
+  }
+
+  writeValue(obj: any): void {
+    this.value = obj ?? '';
+  }
+
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
   }
 }

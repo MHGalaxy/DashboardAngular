@@ -3,10 +3,8 @@
 
   <div class="grid grid-cols-1 gap-6 xl:grid-cols-1">
     <div class="space-y-6">
-
       <app-component-card title="New Product">
 
-        <!-- messages -->
         @if(errorMessage){
           <div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-red-700">
             {{ errorMessage }}
@@ -18,37 +16,36 @@
           </div>
         }
 
-        <!-- form -->
-        <form (submit)="$event.preventDefault(); submit()" class="space-y-6">
+        <form (ngSubmit)="submit()" class="space-y-6">
 
           <div>
             <app-label for="title">Title:</app-label>
             <app-input-field
               type="text"
               id="title"
+              name="title"
               placeholder="Title of product ..."
-              [value]="form.title"
-              (valueChange)="onTitleChange($event)"
+              [(ngModel)]="form.title"
             />
           </div>
 
           <div>
             <app-label for="description">Description:</app-label>
             <app-text-area
+              name="description"
               [rows]="6"
               placeholder="Description ..."
-              [value]="form.description"
-              (valueChange)="onDescriptionChange($event)"
+              [(ngModel)]="form.description"
             ></app-text-area>
           </div>
 
           <div>
             <app-label>Provider:</app-label>
             <app-select
+              name="providerId"
               [options]="providers"
               placeholder="Select a provider"
-              [value]="form.providerId ? (form.providerId + '') : ''"
-              (valueChange)="onProviderChange($event)"
+              [(ngModel)]="form.providerId"
               className="dark:bg-dark-900"
             ></app-select>
           </div>
@@ -58,9 +55,9 @@
             <app-input-field
               type="number"
               id="price"
+              name="price"
               placeholder="50 ..."
-              [value]="form.price"
-              (valueChange)="onPriceChange($event)"
+              [(ngModel)]="form.price"
             />
           </div>
 
@@ -69,13 +66,12 @@
             <app-input-field
               type="text"
               id="imageSrc"
+              name="imageSrc"
               placeholder="https://..."
-              [value]="form.imageSrc"
-              (valueChange)="onImageSrcChange($event)"
+              [(ngModel)]="form.imageSrc"
             />
           </div>
 
-          <!-- submit -->
           <button
             type="submit"
             class="inline-flex items-center justify-center rounded-lg bg-success-500 px-4 py-3 text-theme-sm font-medium text-white shadow-theme-xs hover:bg-success-600 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -87,7 +83,6 @@
         </form>
 
       </app-component-card>
-
     </div>
   </div>
 </div>

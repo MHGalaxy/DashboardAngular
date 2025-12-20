@@ -10,7 +10,8 @@
     [step]="step"
     [disabled]="disabled"
     [ngClass]="inputClasses"
-    (input)="onInput($event)"
+    (input)="handleInput($event)"
+    (blur)="handleBlur()"
   />
 
   @if (hint) {
