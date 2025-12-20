@@ -1,0 +1,93 @@
+<div>
+  <app-page-breadcrumb pageTitle="Create Product" />
+
+  <div class="grid grid-cols-1 gap-6 xl:grid-cols-1">
+    <div class="space-y-6">
+
+      <app-component-card title="New Product">
+
+        <!-- messages -->
+        @if(errorMessage){
+          <div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-red-700">
+            {{ errorMessage }}
+          </div>
+        }
+        @if(successMessage){
+          <div class="mb-4 rounded-lg border border-green-200 bg-green-50 p-3 text-green-700">
+            {{ successMessage }}
+          </div>
+        }
+
+        <!-- form -->
+        <form (submit)="$event.preventDefault(); submit()" class="space-y-6">
+
+          <div>
+            <app-label for="title">Title:</app-label>
+            <app-input-field
+              type="text"
+              id="title"
+              placeholder="Title of product ..."
+              [value]="form.title"
+              (valueChange)="onTitleChange($event)"
+            />
+          </div>
+
+          <div>
+            <app-label for="description">Description:</app-label>
+            <app-text-area
+              [rows]="6"
+              placeholder="Description ..."
+              [value]="form.description"
+              (valueChange)="onDescriptionChange($event)"
+            ></app-text-area>
+          </div>
+
+          <div>
+            <app-label>Provider:</app-label>
+            <app-select
+              [options]="providers"
+              placeholder="Select a provider"
+              [value]="form.providerId ? (form.providerId + '') : ''"
+              (valueChange)="onProviderChange($event)"
+              className="dark:bg-dark-900"
+            ></app-select>
+          </div>
+
+          <div>
+            <app-label for="price">Price:</app-label>
+            <app-input-field
+              type="number"
+              id="price"
+              placeholder="50 ..."
+              [value]="form.price"
+              (valueChange)="onPriceChange($event)"
+            />
+          </div>
+
+          <div>
+            <app-label for="imageSrc">Image URL:</app-label>
+            <app-input-field
+              type="text"
+              id="imageSrc"
+              placeholder="https://..."
+              [value]="form.imageSrc"
+              (valueChange)="onImageSrcChange($event)"
+            />
+          </div>
+
+          <!-- submit -->
+          <button
+            type="submit"
+            class="inline-flex items-center justify-center rounded-lg bg-success-500 px-4 py-3 text-theme-sm font-medium text-white shadow-theme-xs hover:bg-success-600 disabled:opacity-50 disabled:cursor-not-allowed"
+            [disabled]="!isValid || isSubmitting"
+          >
+            {{ isSubmitting ? 'Creating...' : 'Create Product' }}
+          </button>
+
+        </form>
+
+      </app-component-card>
+
+    </div>
+  </div>
+</div>

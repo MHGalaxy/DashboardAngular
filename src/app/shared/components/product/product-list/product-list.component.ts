@@ -2,15 +2,17 @@ import {Component, OnInit} from '@angular/core';
 import {PageBreadcrumbComponent} from '../../common/page-breadcrumb/page-breadcrumb.component';
 import {ComponentCardComponent} from '../../common/component-card/component-card.component';
 import {ApiError, ProductService} from '../../../services/product.service';
-import {ProductDto} from '../../../dtos/product.dto';
+import {ProductDto} from '../../../dtos/product/product.dto';
 import {DatePipe} from '@angular/common';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-product-list',
   imports: [
     PageBreadcrumbComponent,
     ComponentCardComponent,
-    DatePipe
+    DatePipe,
+    RouterLink
   ],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css',

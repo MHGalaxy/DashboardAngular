@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {ProductDto} from '../dtos/product.dto';
+import {ProductDto} from '../dtos/product/product.dto';
 import {catchError, Observable, retry, throwError, timeout} from 'rxjs';
+import {CreateProductDto} from '../dtos/product/create-product.dto';
 
 export interface ApiError {
   message: string;
@@ -35,6 +36,17 @@ export class ProductService {
         // map errors into something your UI can show
         catchError((err) => this.handleHttpError(err))
       );
+  }
+
+  /**
+   * Insert a product
+   */
+  create(payload: CreateProductDto): Observable<ProductDto> {
+    return this.http.post<ProductDto>(`${this.baseUrl}/Products`, payload).pipe(
+      timeout(10_000),
+      retry({ count: 0 }), // usually you DON'T want retry on create
+      catchError((e) => this.handleHttpError(e))
+    );
   }
 
   private handleHttpError(err: unknown) {
