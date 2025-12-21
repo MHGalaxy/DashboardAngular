@@ -3,6 +3,7 @@ import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {ProductDto} from '../dtos/product/product.dto';
 import {catchError, Observable, retry, throwError, timeout} from 'rxjs';
 import {CreateProductDto} from '../dtos/product/create-product.dto';
+import {UpdateProductDto} from '../dtos/product/update-product.dto';
 
 export interface ApiError {
   message: string;
@@ -39,12 +40,45 @@ export class ProductService {
   }
 
   /**
+   * Get product by id
+   */
+  getById(id: number): Observable<ProductDto> {
+    return this.http.get<ProductDto>(`${this.baseUrl}/Products/${id}`).pipe(
+      timeout(10_000),
+      retry({ count: 1, delay: 300 }),
+      catchError((err) => this.handleHttpError(err))
+    );
+  }
+
+  /**
    * Insert a product
    */
   create(payload: CreateProductDto): Observable<ProductDto> {
     return this.http.post<ProductDto>(`${this.baseUrl}/Products`, payload).pipe(
       timeout(10_000),
       retry({ count: 0 }), // usually you DON'T want retry on create
+      catchError((e) => this.handleHttpError(e))
+    );
+  }
+
+  /**
+   * Update product by id
+   */
+  update(id: number, payload: UpdateProductDto): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/Products/${id}`, payload).pipe(
+      timeout(10_000),
+      retry({ count: 0 }), // DON'T retry updates by default
+      catchError((e) => this.handleHttpError(e))
+    );
+  }
+
+  /**
+   * Delete product by id
+   */
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/Products/${id}`).pipe(
+      timeout(10_000),
+      retry({ count: 0 }), // don't retry deletes
       catchError((e) => this.handleHttpError(e))
     );
   }
