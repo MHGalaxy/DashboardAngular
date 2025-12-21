@@ -75,11 +75,11 @@
           <button
             type="submit"
             class="inline-flex items-center justify-center rounded-lg bg-success-500 px-4 py-3 text-theme-sm font-medium text-white shadow-theme-xs hover:bg-success-600 disabled:opacity-50 disabled:cursor-not-allowed"
-            [disabled]="!isValid || isSubmitting"
+
           >
             {{ isSubmitting ? 'Creating...' : 'Create Product' }}
           </button>
-
+<!--          [disabled]="!isValid || isSubmitting"-->
         </form>
 
       </app-component-card>

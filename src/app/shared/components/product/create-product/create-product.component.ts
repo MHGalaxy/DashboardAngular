@@ -10,6 +10,8 @@ import { TextAreaComponent } from '../../form/text-area/text-area.component';
 
 import { CreateProductDto } from '../../../dtos/product/create-product.dto';
 import { ApiError, ProductService } from '../../../services/product.service';
+import {AlertService} from '../../../services/alert.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-create-product',
@@ -45,7 +47,11 @@ export class CreateProductComponent {
   errorMessage: string | null = null;
   successMessage: string | null = null;
 
-  constructor(private productService: ProductService) {}
+  constructor(
+    private productService: ProductService,
+    private alert: AlertService,
+    private router: Router
+  ) {}
 
   get isValid(): boolean {
     return (
@@ -62,6 +68,7 @@ export class CreateProductComponent {
 
     if (!this.isValid) {
       this.errorMessage = 'Please fill all required fields correctly.';
+      this.alert.warning('Invalid form',  this.errorMessage);
       return;
     }
 
@@ -77,13 +84,16 @@ export class CreateProductComponent {
     this.productService.create(payload).subscribe({
       next: (created) => {
         this.isSubmitting = false;
-        this.successMessage = `Product created (ID: ${created.productId})`;
+        this.successMessage = `Product created successfully (ID: ${created.productId}).`;
+        this.alert.success('Created!',  this.successMessage);
 
         this.form = { title: '', description: '', providerId: 0, price: 0, imageSrc: '' };
+        this.router.navigate(['products']);
       },
       error: (err: ApiError) => {
         this.isSubmitting = false;
         this.errorMessage = err.message ?? 'Failed to create product.';
+        this.alert.error('Create failed', this.errorMessage);
         console.error('Create product error:', err);
       },
     });
